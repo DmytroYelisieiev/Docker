@@ -2,20 +2,25 @@ import fs from 'node:fs';
 
 const path = "./file"
 const content = "Hello world!"
+const errorDir = "Error to create Directory"
+const dirCreated = 'Directory is created'
+const errorFile = "Error to create file"
+const fileCreated = "File is created"
+const dirfile = "file/Hello.txt"
 
 
 fs.mkdir(path, (error) => {
   if (error) {
-    console.log("Error to create file")
+    console.log(errorDir)
     return;
   }
-  console.log("File is created")
+  console.log(dirCreated)
 });
 
-fs.writeFile("file/Hello.txt", content, (error) => {
+fs.writeFile(dirfile, content, (error) => {
   if (error) { 
-    console.error("Error to create file")
+    console.error(errorFile)
     return;
   }
-  console.log("File is created")
+  console.log(fileCreated)
 });
