@@ -11,7 +11,7 @@ const dirfile = "file/Hello.txt"
 
 fs.mkdir(path, (error) => {
   if (error) {
-    console.log(errorDir)
+    console.error(errorDir, error)
     return;
   }
   console.log(dirCreated)
@@ -19,7 +19,7 @@ fs.mkdir(path, (error) => {
 
 fs.writeFile(dirfile, content, (error) => {
   if (error) { 
-    console.error(errorFile)
+    console.error(errorFile, error)
     return;
   }
   console.log(fileCreated)
