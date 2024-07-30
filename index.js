@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const path = "./file"
+const path = "file"
 const content = "Hello world!"
 const errorDir = "Error to create Directory"
 const dirCreated = 'Directory is created'
