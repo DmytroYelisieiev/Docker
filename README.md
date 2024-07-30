@@ -2,4 +2,4 @@
 
 docker build -t dockerlesson .
 
-docker run dockerlesson
+docker run -v /Users/'Username'/Docker/:/app  dockerlesson
