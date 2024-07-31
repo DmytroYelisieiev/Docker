@@ -3,7 +3,7 @@ services:
   app:
     image: dockerlesson
     volumes:
-      - /Users/dimaeliseev/Docker/:/app
+      - ./:/app
 
 volumes:
   dockerlessson:
