@@ -1,0 +1,9 @@
+version: '1'
+services:
+  app:
+    image: dockerlesson
+    volumes:
+      - /Users/dimaeliseev/Docker/:/app
+
+volumes:
+  dockerlessson:
