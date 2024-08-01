@@ -1,7 +1,7 @@
 # Docker
 
-docker build -t dockerlesson .
+<!-- docker build -t dockerlesson . -->
 
 <!-- docker run -v /Users/'Username'/Docker/:/app  dockerlesson -->
 
-docker-compose up
+docker-compose up --build
