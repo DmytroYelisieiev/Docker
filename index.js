@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import mysql from 'mysql2';
+import waitOn from 'wait-on'
 
 const path = "file";
 const content = "Hello world!";
@@ -10,7 +11,18 @@ const errorFile = "Error to create file";
 const fileCreated = "File is created";
 const dirfile = "file/Hello.txt";
 
-setTimeout(() => {
+
+let opts = {
+  resources: [`tcp:${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}`],
+  timeout: 30000, 
+  interval: 1000,
+  window: 1000, 
+};
+
+waitOn(opts, function (err) {
+  if (err) {
+    return handleError(err);
+  }
   const connection = mysql.createConnection({
     host: process.env.MYSQL_HOST, 
     port: process.env.MYSQL_PORT,
@@ -46,7 +58,7 @@ setTimeout(() => {
       connection.end();
     });
   });
-}, 10000);
+});
 
 
 fs.mkdir(path, (error) => {
@@ -64,14 +76,3 @@ fs.writeFile(dirfile, content, (error) => {
   }
   console.log(fileCreated);
 });
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!\n');
-});
-
-server.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
-});
-
