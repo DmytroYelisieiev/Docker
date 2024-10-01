@@ -1,7 +1,8 @@
 import fs from 'node:fs';
-import http from 'node:http';
-import mysql from 'mysql2';
-import waitOn from 'wait-on'
+import mysql from 'mysql2/promise';
+import waitOn from 'wait-on';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 const path = "file";
 const content = "Hello world!";
@@ -11,7 +12,6 @@ const errorFile = "Error to create file";
 const fileCreated = "File is created";
 const dirfile = "file/Hello.txt";
 
-
 let opts = {
   resources: [`tcp:${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}`],
   timeout: 30000, 
@@ -19,47 +19,74 @@ let opts = {
   window: 1000, 
 };
 
-waitOn(opts, function (err) {
-  if (err) {
-    return handleError(err);
-  }
-  const connection = mysql.createConnection({
-    host: process.env.MYSQL_HOST, 
-    port: process.env.MYSQL_PORT,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_ROOT_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-  });
+async function parseNurKz(connection) {
+  const url = 'https://nur.kz/';
 
-  connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL:', err);
-      return;
+  try {
+    
+    const response = await axios.get(url);
+    
+    const $ = cheerio.load(response.data);
+    
+    const newsItems = $('._title_1th24_9')
+      .map((index, element) => $(element).text().trim())
+      .get();
+
+    console.log(`\n ${newsItems.length} новостей:`);
+    for (const title of newsItems) {
+      await insertUniqueTitle(connection, title);
     }
+
+    console.log('Уникальные заголовки сохранены в базе данных.');
+  } catch (error) {
+    console.error('Ошибка при парсинге данных:', error.message);
+  }
+}
+
+async function insertUniqueTitle(connection, title) {
+  try {
+    await connection.execute(
+      'INSERT IGNORE INTO news_titles (title) VALUES (?)',
+      [title]
+    );
+  } catch (error) {
+    console.error('Ошибка при вставке заголовка:', error.message);
+  }
+}
+
+waitOn(opts, async function (err) {
+  if (err) {
+    console.error('Ошибка при ожидании MySQL:', err);
+    return;
+  }
+  
+  let connection;
+  try {
+    connection = await mysql.createConnection({
+      host: process.env.MYSQL_HOST, 
+      port: process.env.MYSQL_PORT,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_ROOT_PASSWORD,
+      database: process.env.MYSQL_DATABASE
+    });
+
     console.log('Connected to MySQL successfully');
 
-    const currentTime = new Date().toISOString();
-    connection.query('INSERT INTO my_table (text) VALUES (?)', [`Я выполнил свою задачу в ${currentTime}`],
-    (error) => {
-      if (error) {
-        console.error('Error inserting data:', error.stack);
-      } else {
-        console.log('Data inserted successfully');
-      }
-    });
-    
-    let query = 'SELECT * FROM my_table';
-    connection.query(query, (error, results) => {
-      if (error) {
-        console.error('Error selecting data:', error.stack);
-      } else {
-        console.log('Data from my_table:', results);
-      }
-      connection.end();
-    });
-  });
-});
+    // Вывод данных из таблицы news_titles
 
+    await parseNurKz(connection);
+
+    const [results] = await connection.execute('SELECT * FROM news_titles');
+    console.log('Данные из таблицы news_titles:', results);
+
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+  }
+});
 
 fs.mkdir(path, (error) => {
   if (error) {
