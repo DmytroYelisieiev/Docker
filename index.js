@@ -35,6 +35,7 @@ async function parseNurKz(connection) {
     })
     .get()
     .filter(title => title)
+    
 
     console.log(`\n ${newsItems.length} новостей`);
     for (const title of newsItems) {
