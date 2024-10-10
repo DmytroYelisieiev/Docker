@@ -28,11 +28,16 @@ async function parseNurKz(connection) {
     
     const $ = cheerio.load(response.data);
     
-    const newsItems = $('._title_1th24_9')
-      .map((index, element) => $(element).text().trim())
-      .get();
+    const newsItems = $('._blockTopImportantItem_he0uz_1')
+    .map((index, element) => {
+      let title = $(element).text().trim();
+      return title.replace(/\d{2}:\d{2}$/, '').trim();
+    })
+    .get()
+    .filter(title => title)
+    
 
-    console.log(`\n ${newsItems.length} новостей:`);
+    console.log(`\n ${newsItems.length} новостей`);
     for (const title of newsItems) {
       await insertUniqueTitle(connection, title);
     }
@@ -76,7 +81,7 @@ waitOn(opts, async function (err) {
 
     await parseNurKz(connection);
 
-    const [results] = await connection.execute('SELECT * FROM news_titles');
+    const [results] = await connection.execute('SELECT * FROM news_titles ORDER BY id');
     console.log('Данные из таблицы news_titles:', results);
 
   } catch (error) {
