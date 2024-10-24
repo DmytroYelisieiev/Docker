@@ -39,7 +39,7 @@ async function parseNurKz() {
     const $ = cheerio.load(response.data);
     
     const newsItems = $('._blockTopImportantItem_he0uz_1')
-      .map((element) => {
+      .map((index, element) => {
         let title = $(element).text().trim();
         return title.replace(/\d{2}:\d{2}$/, '').trim();
       })
