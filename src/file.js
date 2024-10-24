@@ -9,7 +9,7 @@ const fileCreated = "File is created";
 const dirfile = "file/Hello.txt";
 
 export function createFiles() {
-  fs.mkdir(path, { recursive: true }, (error) => {
+  fs.mkdir(path, (error) => {
     if (error) {
       console.error(errorDir, error);
       return;
