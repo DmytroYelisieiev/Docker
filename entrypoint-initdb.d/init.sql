@@ -4,5 +4,6 @@ USE testDB;
 
 CREATE TABLE IF NOT EXISTS news_titles (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) UNIQUE
+    title VARCHAR(255) UNIQUE,
+    answer VARCHAR(255)
 );
