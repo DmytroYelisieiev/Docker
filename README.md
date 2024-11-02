@@ -5,15 +5,16 @@ Use own credits at .env
 
 <!-- npm i -->
 
-docker-compose up --build
+`docker-compose up --build`
 
-curl --location 'localhost:3000/title?id='
+`curl --location 'localhost:3000/title?id='`
 
 ## FOR MIGRATION:
 
 1. Make migration:
 
 `docker exec -it docker-app-1 npx knex migrate:make 'task' --knexfile knexfile.cjs`
+
 2. Download migration script
 
 `docker cp docker-app-1:/app/migrations/'namejs'`
