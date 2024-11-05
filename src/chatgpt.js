@@ -17,7 +17,7 @@ export async function getGPTResponse(title) {
         });
         return completion.choices[0].message.content;
     } catch (error) {
-        console.error('CHATGPT error', error);
+        console.log('CHATGPT error', error);
         return null;
     }
 }
