@@ -9,7 +9,7 @@ export async function parseNurKz() {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
     
-    const newsItems = $('.g9t_blockTopImportantItem_ni6c4_1')
+    const newsItems = $('._blockTopImportantItem_ni6c4_1')
       .map((index, element) => {
         let title = $(element).text().trim();
         return title.replace(/\d{2}:\d{2}$/, '').trim();

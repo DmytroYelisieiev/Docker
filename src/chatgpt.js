@@ -22,4 +22,4 @@ export async function getGPTResponse(title) {
     }
 }
 
-1
+
