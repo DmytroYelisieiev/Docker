@@ -21,3 +21,5 @@ export async function getGPTResponse(title) {
         return null;
     }
 }
+
+1
