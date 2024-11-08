@@ -12,33 +12,37 @@ bot.on("polling_error", (error) => {
 bot.onText(/\/start/, (msg) => {
     console.log("get /start ");
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Hello! Use /get_title id");
+    bot.sendMessage(chatId, "Hello! Write down an ID ");
 });
 
-bot.onText(/\/get_title (.+)/, async (msg, match) => {
+bot.on("message", async (msg) => {
     const chatId = msg.chat.id;
-    const id = match[1];
+    const text = msg.text.trim();
 
-    try {
-        const response = await fetch(`http://localhost:3000/title?id=${id}`);
+    if (/^\d+$/.test(text)) {
+        const id = text;
 
-        if (!response.ok) {
-            throw new Error(`Error request API: ${response.statusText}`);
-        }
+        try {
+            const response = await fetch(`http://localhost:3000/title?id=${id}`);
 
-        const title = await response.json();
+            if (!response.ok) {
+                throw new Error(`Error request API: ${response.statusText}`);
+            }
 
-        const message = `
+            const title = await response.json();
+
+            const message = `
 *Title:* ${title.title}
 
 *Answer:* ${title.answer}
 `;
 
-        bot.sendMessage(chatId, message, { parse_mode: 'Markdown' });
+            bot.sendMessage(chatId, message, {parse_mode: 'Markdown'});
 
-    } catch (error) {
-        console.error("get erroor", error);
-        bot.sendMessage(chatId, "Error to get info");
+        } catch (error) {
+            console.error("get erroor", error);
+            bot.sendMessage(chatId, "Error to get info");
+        }
     }
 });
 
