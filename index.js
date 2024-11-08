@@ -3,6 +3,7 @@ import { createConnection } from './database.js';
 import { parseNurKz } from './parser.js'
 import { createServer } from './server.js'
 import waitOn from 'wait-on';
+import './telegram.js';
 
 let opts = {
   resources: [`tcp:${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}`],
