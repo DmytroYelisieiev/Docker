@@ -8,15 +8,12 @@ export async function parseNurKz() {
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-    
-    const newsItems = $('._blockTopImportantItem_ni6c4_1')
-      .map((index, element) => {
-        let title = $(element).text().trim();
-        return title.replace(/\d{2}:\d{2}$/, '').trim();
-      })
-      .get()
-      .filter(title => title);
-    
+
+    const newsItems = $('[class*=_blockTopImportantItem] .article-card__title')
+        .get()
+        .map(title => $(title).text())
+        .filter(title => title);
+
     console.log(`\n ${newsItems.length} новостей`);
     
     const connection = await createConnection();
