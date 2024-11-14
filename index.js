@@ -1,9 +1,9 @@
-import { createFiles } from './file.js';
-import { createConnection } from './database.js';
-import { parseNurKz } from './parser.js'
-import { createServer } from './server.js'
+import { createConnection } from './src/database.js';
+import { parseNurKz } from './src/parser.js'
+import { createServer } from './src/server.js'
 import waitOn from 'wait-on';
-import './telegram.js';
+import './src/telegram.js';
+
 
 let opts = {
   resources: [`tcp:${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}`],
@@ -19,7 +19,7 @@ waitOn(opts, async function (err) {
   }
   
   try {
-    await createFiles(); 
+    // await createFiles();
     await parseNurKz(); 
     await createServer(); 
 
